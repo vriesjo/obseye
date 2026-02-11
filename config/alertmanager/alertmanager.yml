@@ -1,0 +1,34 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'default'
+  routes:
+    - match:
+        severity: critical
+      receiver: critical
+      continue: true
+    - match:
+        severity: warning
+      receiver: warning
+
+receivers:
+  - name: 'default'
+    # Default receiver - can be configured with webhook, email, etc.
+    
+  - name: 'critical'
+    # Critical alerts - can be configured with PagerDuty, email, etc.
+    
+  - name: 'warning'
+    # Warning alerts - can be configured with Slack, email, etc.
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'cluster', 'service']

@@ -120,22 +120,25 @@ spec:
 
         # Add set values if specified
         if [ -n "$(params.SET_VALUES)" ]; then
-          # Split comma-separated values and add each as --set
+          SET_VALUES_ARGS=""
           echo "$(params.SET_VALUES)" | tr ',' '\n' | while IFS= read -r value; do
             if [ -n "$value" ]; then
-              HELM_CMD="${HELM_CMD} --set ${value}"
+              SET_VALUES_ARGS="${SET_VALUES_ARGS} --set ${value}"
             fi
           done
+          HELM_CMD="${HELM_CMD}${SET_VALUES_ARGS}"
           echo "Setting values: $(params.SET_VALUES)"
         fi
 
         # Add overwrite values if specified
         if [ -n "$(params.OVERWRITE_VALUES)" ]; then
+          OVERWRITE_VALUES_ARGS=""
           echo "$(params.OVERWRITE_VALUES)" | tr ',' '\n' | while IFS= read -r value; do
             if [ -n "$value" ]; then
-              HELM_CMD="${HELM_CMD} --set ${value}"
+              OVERWRITE_VALUES_ARGS="${OVERWRITE_VALUES_ARGS} --set ${value}"
             fi
           done
+          HELM_CMD="${HELM_CMD}${OVERWRITE_VALUES_ARGS}"
           echo "Overwriting values: $(params.OVERWRITE_VALUES)"
         fi
 
@@ -152,7 +155,7 @@ spec:
         echo "Deployment completed successfully!"
 
         # Get release info
-        helm list -n $(params.RELEASE_NAMESPACE) | grep $(params.RELEASE_NAME) || true
+        helm list -n $(params.RELEASE_NAMESPACE) | grep -w "$(params.RELEASE_NAME)" || true
 
         # Store results
         echo -n "$(params.RELEASE_NAME)" > "$(results.RELEASE_NAME.path)"

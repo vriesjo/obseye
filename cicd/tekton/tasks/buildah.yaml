@@ -113,9 +113,11 @@ spec:
         fi
 
         # Configure authentication if dockerconfig workspace is provided
-        if [ -n "$(workspaces.dockerconfig.path)" ] && [ -f "$(workspaces.dockerconfig.path)/config.json" ]; then
+        if [ -d "$(workspaces.dockerconfig.path)" ] 2>/dev/null && [ -f "$(workspaces.dockerconfig.path)/config.json" ]; then
           export REGISTRY_AUTH_FILE="$(workspaces.dockerconfig.path)/config.json"
           echo "Using authentication from dockerconfig workspace"
+        else
+          echo "No dockerconfig workspace provided, using default authentication"
         fi
 
         echo "Pushing image: $(params.IMAGE)"

@@ -80,7 +80,7 @@ kubectl get nodes
 Install Tekton Pipelines on your cluster:
 
 ```bash
-# Install Tekton Pipelines (v0.50.0 or later)
+# Install Tekton Pipelines (v0.29.0 or later)
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 
 # Verify installation

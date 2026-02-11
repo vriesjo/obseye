@@ -1,6 +1,6 @@
 # obseye
 
-Complete monitoring stack with Docker Compose. This stack provides comprehensive observability including metrics, logs, dashboards, and alerting.
+Complete monitoring stack with Docker Compose for microservice observability. This stack provides comprehensive SRE metrics including latencies, errors, saturation, and alerting for JVM-based microservices.
 
 ## Quick Start
 
@@ -71,10 +71,11 @@ Wait about 30 seconds for all services to initialize, then access Grafana at htt
 
 ### 1. Grafana (Dashboarding)
 - Pre-configured data sources for Prometheus and Loki
-- Three default dashboards:
+- Four default dashboards:
   - **Node Exporter Metrics**: CPU, memory, disk, network for the host system
   - **cAdvisor Container Metrics**: Resource usage for all containers
   - **Docker Overview**: High-level system overview with logs
+  - **Proaktive-db Microservice SRE Metrics**: Latencies, errors, saturation for JVM microservices
 - Persistent storage for dashboards and settings
 
 ### 2. Prometheus (Metrics Database)
@@ -187,6 +188,12 @@ route:
 - **Location**: Grafana → Dashboards → Docker Overview
 - **Shows**: System-wide statistics, container logs
 - **Useful for**: Quick health check, log analysis
+
+### Proaktive-db Microservice SRE Metrics Dashboard
+- **Location**: Grafana → Dashboards → Proaktive-db Microservice SRE Metrics
+- **Shows**: HTTP request latencies (p50, p95, p99), error rates (5xx), saturation (CPU, JVM heap, threads)
+- **Refresh**: Auto-refreshes every 5 seconds
+- **Useful for**: Monitoring microservice performance, identifying bottlenecks, SRE golden signals
 
 ## Example Prometheus Queries
 
@@ -553,7 +560,8 @@ obseye/
 │           └── dashboards/         # JSON dashboard files
 │               ├── node-exporter-dashboard.json
 │               ├── cadvisor-dashboard.json
-│               └── docker-overview-dashboard.json
+│               ├── docker-overview-dashboard.json
+│               └── proaktive-db.json
 └── README.md                       # This file
 ```
 

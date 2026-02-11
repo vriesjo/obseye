@@ -1,0 +1,162 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: helm-deploy
+  namespace: default
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.29.0"
+    tekton.dev/categories: Deployment
+    tekton.dev/tags: helm, deploy
+    tekton.dev/displayName: "helm deploy"
+    tekton.dev/platforms: "linux/amd64,linux/arm64"
+spec:
+  description: >-
+    This Task deploys an application using Helm.
+    
+    It supports both installing new releases and upgrading existing ones,
+    with configurable values and namespace options.
+    
+  params:
+    - name: CHART
+      description: The Helm chart to deploy (path or chart reference)
+      type: string
+    - name: RELEASE_NAME
+      description: Name of the Helm release
+      type: string
+    - name: RELEASE_NAMESPACE
+      description: Kubernetes namespace to deploy the release into
+      type: string
+      default: "default"
+    - name: VALUES_FILE
+      description: Path to values file (relative to workspace, optional)
+      type: string
+      default: ""
+    - name: SET_VALUES
+      description: Set values on the command line (comma-separated key=value pairs)
+      type: string
+      default: ""
+    - name: OVERWRITE_VALUES
+      description: Override values (--set flag, comma-separated)
+      type: string
+      default: ""
+    - name: HELM_VERSION
+      description: Helm version to use
+      type: string
+      default: "latest"
+    - name: UPGRADE_EXTRA_ARGS
+      description: Extra arguments for helm upgrade command
+      type: string
+      default: ""
+    - name: CREATE_NAMESPACE
+      description: Create the release namespace if not present
+      type: string
+      default: "true"
+    - name: ATOMIC
+      description: If set, upgrade process rolls back changes made in case of failed upgrade
+      type: string
+      default: "true"
+    - name: WAIT
+      description: Wait for resources to be ready before marking release as successful
+      type: string
+      default: "true"
+    - name: TIMEOUT
+      description: Time to wait for operations (e.g., 5m0s, 10m)
+      type: string
+      default: "5m0s"
+
+  results:
+    - name: RELEASE_NAME
+      description: Name of the deployed Helm release
+    - name: RELEASE_NAMESPACE
+      description: Namespace where the release was deployed
+
+  workspaces:
+    - name: source
+      description: Workspace containing the chart or values files
+
+  steps:
+    - name: helm-deploy
+      image: alpine/helm:$(params.HELM_VERSION)
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/bin/sh
+        set -e
+
+        echo "Deploying Helm chart: $(params.CHART)"
+        echo "Release name: $(params.RELEASE_NAME)"
+        echo "Namespace: $(params.RELEASE_NAMESPACE)"
+
+        # Build helm upgrade command
+        HELM_CMD="helm upgrade --install $(params.RELEASE_NAME) $(params.CHART)"
+        HELM_CMD="${HELM_CMD} --namespace $(params.RELEASE_NAMESPACE)"
+
+        # Add create-namespace flag if enabled
+        if [ "$(params.CREATE_NAMESPACE)" = "true" ]; then
+          HELM_CMD="${HELM_CMD} --create-namespace"
+        fi
+
+        # Add atomic flag if enabled
+        if [ "$(params.ATOMIC)" = "true" ]; then
+          HELM_CMD="${HELM_CMD} --atomic"
+        fi
+
+        # Add wait flag if enabled
+        if [ "$(params.WAIT)" = "true" ]; then
+          HELM_CMD="${HELM_CMD} --wait --timeout $(params.TIMEOUT)"
+        fi
+
+        # Add values file if specified
+        if [ -n "$(params.VALUES_FILE)" ]; then
+          if [ -f "$(params.VALUES_FILE)" ]; then
+            HELM_CMD="${HELM_CMD} -f $(params.VALUES_FILE)"
+            echo "Using values file: $(params.VALUES_FILE)"
+          else
+            echo "Warning: Values file $(params.VALUES_FILE) not found, skipping"
+          fi
+        fi
+
+        # Add set values if specified
+        if [ -n "$(params.SET_VALUES)" ]; then
+          SET_VALUES_ARGS=""
+          echo "$(params.SET_VALUES)" | tr ',' '\n' | while IFS= read -r value; do
+            if [ -n "$value" ]; then
+              SET_VALUES_ARGS="${SET_VALUES_ARGS} --set ${value}"
+            fi
+          done
+          HELM_CMD="${HELM_CMD}${SET_VALUES_ARGS}"
+          echo "Setting values: $(params.SET_VALUES)"
+        fi
+
+        # Add overwrite values if specified
+        if [ -n "$(params.OVERWRITE_VALUES)" ]; then
+          OVERWRITE_VALUES_ARGS=""
+          echo "$(params.OVERWRITE_VALUES)" | tr ',' '\n' | while IFS= read -r value; do
+            if [ -n "$value" ]; then
+              OVERWRITE_VALUES_ARGS="${OVERWRITE_VALUES_ARGS} --set ${value}"
+            fi
+          done
+          HELM_CMD="${HELM_CMD}${OVERWRITE_VALUES_ARGS}"
+          echo "Overwriting values: $(params.OVERWRITE_VALUES)"
+        fi
+
+        # Add extra arguments
+        if [ -n "$(params.UPGRADE_EXTRA_ARGS)" ]; then
+          HELM_CMD="${HELM_CMD} $(params.UPGRADE_EXTRA_ARGS)"
+        fi
+
+        # Execute helm command
+        echo "Executing: ${HELM_CMD}"
+        eval ${HELM_CMD}
+
+        echo ""
+        echo "Deployment completed successfully!"
+
+        # Get release info
+        helm list -n $(params.RELEASE_NAMESPACE) | grep -w "$(params.RELEASE_NAME)" || true
+
+        # Store results
+        echo -n "$(params.RELEASE_NAME)" > "$(results.RELEASE_NAME.path)"
+        echo -n "$(params.RELEASE_NAMESPACE)" > "$(results.RELEASE_NAMESPACE.path)"

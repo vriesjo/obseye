@@ -1,0 +1,84 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: obseye-deploy-run-example
+  namespace: default
+  labels:
+    app.kubernetes.io/name: obseye
+    tekton.dev/pipeline: obseye-deploy-pipeline
+spec:
+  pipelineRef:
+    name: obseye-deploy-pipeline
+
+  # Workspace configuration
+  workspaces:
+    - name: shared-data
+      # Option 1: Use PVC (recommended for production)
+      persistentVolumeClaim:
+        claimName: tekton-workspace-pvc
+      
+      # Option 2: Use emptyDir (for testing or single-node clusters)
+      # emptyDir: {}
+      
+      # Option 3: Use VolumeClaimTemplate (creates PVC on-the-fly)
+      # volumeClaimTemplate:
+      #   spec:
+      #     accessModes:
+      #       - ReadWriteOnce
+      #     resources:
+      #       requests:
+      #         storage: 10Gi
+
+  # Pipeline parameters
+  params:
+    # Git repository configuration
+    - name: git-url
+      value: "https://github.com/vriesjo/obseye.git"
+    - name: git-revision
+      value: "main"
+    - name: git-subdirectory
+      value: "source"
+
+    # Container image configuration
+    # Replace with your actual registry and image name
+    - name: image-name
+      value: "localhost:5000/obseye"  # For local registry
+      # value: "quay.io/my-org/obseye"  # For Quay.io
+      # value: "docker.io/my-username/obseye"  # For Docker Hub
+      # value: "ghcr.io/my-org/obseye"  # For GitHub Container Registry
+    - name: image-tag
+      value: "1.0.0"
+    - name: dockerfile
+      value: "./Dockerfile"
+    - name: build-context
+      value: "."
+    - name: skip-push
+      value: "false"  # Set to "true" to skip pushing (for local testing)
+
+    # Helm deployment configuration
+    - name: helm-chart
+      value: "./source/charts/obseye"  # Path to chart in workspace
+      # value: "my-helm-repo/obseye"  # Or reference from Helm repository
+    - name: helm-release-name
+      value: "obseye"
+    - name: helm-release-namespace
+      value: "default"
+    - name: helm-values-file
+      value: ""  # Optional: "source/charts/obseye/values.yaml"
+    - name: helm-set-values
+      value: "replicaCount=3,service.type=LoadBalancer"  # Optional values
+
+  # Timeout for the entire pipeline
+  timeout: "1h"
+
+  # Pod template for pipeline pods (optional)
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+    # nodeSelector:
+    #   kubernetes.io/os: linux
+    # tolerations:
+    #   - key: "node-role.kubernetes.io/master"
+    #     operator: "Exists"
+    #     effect: "NoSchedule"

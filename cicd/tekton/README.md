@@ -34,7 +34,7 @@ This Tekton pipeline provides a complete CI/CD workflow for containerized applic
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Tekton Pipeline                              │
+│                     Tekton Pipeline                             │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ├─► Task 1: git-clone

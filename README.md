@@ -38,12 +38,21 @@ git clone https://github.com/vriesjo/obseye.git
 cd obseye
 ```
 
-2. Start the monitoring stack:
+2. (Optional) Configure environment variables:
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env to customize settings (e.g., Grafana password)
+nano .env
+```
+
+3. Start the monitoring stack:
 ```bash
 docker compose up -d
 ```
 
-3. Verify all services are running:
+4. Verify all services are running:
 ```bash
 docker compose ps
 ```

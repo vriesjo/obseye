@@ -57,10 +57,10 @@ groups:
 
       # Alert for container restart
       - alert: ContainerRestarted
-        expr: rate(container_last_seen[5m]) > 2
+        expr: changes(container_last_seen{name=~".+"}[5m]) > 0
         for: 1m
         labels:
           severity: warning
         annotations:
           summary: "Container {{ $labels.name }} restarted"
-          description: "Container {{ $labels.name }} has restarted multiple times"
+          description: "Container {{ $labels.name }} has restarted in the last 5 minutes"

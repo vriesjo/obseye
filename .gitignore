@@ -1,0 +1,15 @@
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+.DS_Store?
+*.iml
+
+# Monitoring data (if local)
+data/
+prometheus/data/
+grafana/data/
+loki/data/
+alertmanager/data/

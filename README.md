@@ -1,6 +1,18 @@
 # obseye
 
-Complete monitoring stack with Docker Compose for microservice observability. This stack provides comprehensive SRE metrics including latencies, errors, saturation, and alerting for JVM-based microservices.
+Complete monitoring stack together with Tekton pipeline and Helm chart deployment for your k8s machine.
+
+## About 
+DockerFile and Docker Compose configuration for a complete microservice observability stack supported by the following systems:
+- Grafana, 
+- Prometheus, 
+- Alertmanager, 
+- Node Exporter, 
+- cAdvisor, 
+- Loki, 
+- Promtail. 
+
+Pre-configured dashboards for SRE metrics including latencies, errors, saturation, and alerting for JVM-based microservices.
 
 ## Quick Start
 

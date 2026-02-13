@@ -7,9 +7,21 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.service.prometheus.port }}
+      targetPort: prometheus
       protocol: TCP
-      name: http
+      name: prometheus
+    - port: {{ .Values.service.grafana.port }}
+      targetPort: grafana
+      protocol: TCP
+      name: grafana
+    - port: {{ .Values.service.loki.port }}
+      targetPort: loki
+      protocol: TCP
+      name: loki
+    - port: {{ .Values.service.alertmanager.port }}
+      targetPort: alertmanager
+      protocol: TCP
+      name: alertmanager
   selector:
     {{- include "obseye.selectorLabels" . | nindent 4 }}

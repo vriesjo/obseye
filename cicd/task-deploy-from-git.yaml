@@ -1,0 +1,64 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-from-git
+  namespace: default
+  labels:
+    app.kubernetes.io/name: deploy-from-git
+spec:
+  description: "Clone a Git repo and kubectl apply a manifest from it. Expects a secret 'tekton-kubeconfig' with key 'kubeconfig' containing a kubeconfig file."
+  params:
+    - name: url
+      description: Git repository URL to clone
+      type: string
+    - name: revision
+      description: Git revision to checkout (branch, tag, commit SHA)
+      type: string
+      default: "main"
+    - name: path
+      description: Path (relative to repo root) to the manifest to apply
+      type: string
+      default: "deployment.yaml"
+  workspaces:
+    - name: output
+      description: Workspace to clone the repository into
+  results:
+    - name: commit
+      description: Commit SHA that was checked out
+  steps:
+    - name: clone
+      image: alpine/git:latest
+      script: |
+        #!/usr/bin/env sh
+        set -eux
+        # clone into workspace
+        TARGET_DIR="$(workspaces.output.path)"
+        mkdir -p "${TARGET_DIR}"
+        if [ -n "$(params.url)" ]; then
+          git clone --depth=1 "$(params.url)" "${TARGET_DIR}" || true
+          cd "${TARGET_DIR}"
+          # try to checkout requested revision (if clone didn't already produce it)
+          git checkout "$(params.revision)" || true
+        else
+          echo "No repo URL provided"
+          exit 1
+        fi
+        git rev-parse --verify HEAD > "$(results.commit.path)" || true
+    - name: kubectl-apply
+      image: bitnami/kubectl:1.27.3
+      env:
+        - name: KUBECONFIG_DATA
+          valueFrom:
+            secretKeyRef:
+              name: tekton-kubeconfig
+              key: kubeconfig
+      script: |
+        #!/usr/bin/env sh
+        set -eux
+        # write kubeconfig to a file and use it
+        printf "%s" "$KUBECONFIG_DATA" > /tmp/kubeconfig
+        export KUBECONFIG=/tmp/kubeconfig
+        # show kube context for debugging
+        kubectl config view --minify
+        kubectl version --client --short || true
+        kubectl apply -f "$(workspaces.output.path)/$(params.path)"

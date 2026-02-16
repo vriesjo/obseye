@@ -1,8 +1,110 @@
 # obseye
 
-Complete monitoring stack with Docker Compose for microservice observability. This stack provides comprehensive SRE metrics including latencies, errors, saturation, and alerting for JVM-based microservices.
+Complete monitoring stack for microservice observability. This stack provides comprehensive SRE metrics including latencies, errors, saturation, and alerting.
 
-## Quick Start
+## Deployment Options
+
+This monitoring stack can be deployed in two ways:
+1. **Kubernetes (Recommended)** - Production-ready deployment with Helm or plain Kubernetes manifests
+2. **Docker Compose (Legacy)** - Local development and testing
+
+## Quick Start - Kubernetes
+
+### Prerequisites
+
+- **Kubernetes cluster**: Version 1.20 or higher
+- **kubectl**: Configured to access your cluster
+- **Helm**: Version 3.x (optional, for Helm deployment)
+- **Storage**: StorageClass configured for PersistentVolumes
+
+### Deploy with Kubernetes Manifests
+
+Deploy the entire monitoring stack as a single Pod with 4 sidecar containers:
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+This creates:
+- ConfigMap with all configuration files
+- 4 PersistentVolumeClaims for data storage
+- Deployment with 4 sidecar containers (Prometheus, Grafana, Loki, Alertmanager)
+- Service exposing all monitoring endpoints
+
+Wait about 60 seconds for all containers to initialize.
+
+### Deploy with Helm
+
+For production deployments with customizable values:
+
+```bash
+# Install the Helm chart
+helm install obseye ./charts/obseye
+
+# Or with custom values
+helm install obseye ./charts/obseye -f custom-values.yaml
+```
+
+### Access the Services
+
+Port-forward to access Grafana:
+
+```bash
+kubectl port-forward service/obseye 3000:3000
+```
+
+Then access Grafana at http://localhost:3000 (default credentials: admin/admin)
+
+Port-forward other services as needed:
+
+```bash
+# Prometheus
+kubectl port-forward service/obseye 9090:9090
+
+# Loki
+kubectl port-forward service/obseye 3100:3100
+
+# Alertmanager
+kubectl port-forward service/obseye 9093:9093
+```
+
+### Customizing the Deployment
+
+Edit the Helm values file (`charts/obseye/values.yaml`) to customize:
+
+- Container image versions
+- Resource limits and requests
+- Storage sizes
+- Admin credentials
+- Retention periods
+
+Example custom values:
+
+```yaml
+prometheus:
+  retention: 30d
+  resources:
+    limits:
+      memory: 1Gi
+
+grafana:
+  adminPassword: "changeme"
+
+persistence:
+  enabled: true
+  prometheus:
+    size: 20Gi
+```
+
+Apply custom values:
+
+```bash
+helm upgrade obseye ./charts/obseye -f custom-values.yaml
+```
+
+## Quick Start - Docker Compose (Legacy)
+
+> **Note**: Docker Compose deployment is deprecated. Please use Kubernetes for production deployments.
 
 Get the entire monitoring stack running with a single command:
 
@@ -12,7 +114,7 @@ docker-compose up -d
 
 Wait about 30 seconds for all services to initialize, then access Grafana at http://localhost:3000
 
-## Prerequisites
+### Prerequisites for Docker Compose
 
 - **Docker**: Version 20.10 or higher
 - **Docker Compose**: Version 1.29 or higher (v2 recommended)
@@ -21,6 +123,36 @@ Wait about 30 seconds for all services to initialize, then access Grafana at htt
   - Recommended: 8 GB RAM, 4 CPU cores, 20 GB disk space
 
 ## Architecture
+
+### Kubernetes Deployment Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                       Kubernetes Pod (obseye)                    │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │  Prometheus  │  │   Grafana    │  │     Loki     │         │
+│  │   :9090      │  │    :3000     │  │    :3100     │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│                                                                  │
+│  ┌──────────────┐                                               │
+│  │ Alertmanager │                                               │
+│  │    :9093     │                                               │
+│  └──────────────┘                                               │
+│                                                                  │
+│  All containers share localhost networking                      │
+│  Configurations mounted from ConfigMap                          │
+│  Data persisted in PersistentVolumes                           │
+└─────────────────────────────────────────────────────────────────┘
+                            ▲
+                            │
+                   ┌────────┴────────┐
+                   │  Service (ClusterIP)  │
+                   │  Exposes all ports    │
+                   └───────────────────────┘
+```
+
+### Docker Compose Architecture (Legacy)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -50,7 +182,104 @@ Wait about 30 seconds for all services to initialize, then access Grafana at htt
                        └────────────┘
 ```
 
-## Access Information
+## Migrating from Docker Compose to Kubernetes
+
+If you're currently using the Docker Compose deployment and want to migrate to Kubernetes:
+
+### Step 1: Backup Your Data (Optional)
+
+If you want to preserve Grafana dashboards or Prometheus data:
+
+```bash
+# Backup Grafana data
+docker run --rm \
+  -v obseye_grafana-data:/data \
+  -v $(pwd)/backup:/backup \
+  alpine tar czf /backup/grafana-backup-$(date +%Y%m%d).tar.gz -C /data .
+
+# Backup Prometheus data
+docker run --rm \
+  -v obseye_prometheus-data:/data \
+  -v $(pwd)/backup:/backup \
+  alpine tar czf /backup/prometheus-backup-$(date +%Y%m%d).tar.gz -C /data .
+```
+
+### Step 2: Stop Docker Compose Stack
+
+```bash
+# Stop all containers
+docker-compose down
+
+# Optional: Remove volumes (if you don't need to preserve data)
+docker-compose down -v
+```
+
+### Step 3: Deploy to Kubernetes
+
+Choose one of the deployment methods:
+
+**Option A: Using plain Kubernetes manifests**
+```bash
+kubectl apply -f deployment.yaml
+```
+
+**Option B: Using Helm**
+```bash
+helm install obseye ./charts/obseye
+```
+
+### Step 4: Restore Data (Optional)
+
+If you backed up data in Step 1, you can restore it:
+
+```bash
+# Get the pod name
+POD_NAME=$(kubectl get pods -l app=obseye -o jsonpath='{.items[0].metadata.name}')
+
+# Restore Grafana data
+kubectl cp backup/grafana-backup-YYYYMMDD.tar.gz $POD_NAME:/tmp/grafana-backup.tar.gz -c grafana
+kubectl exec $POD_NAME -c grafana -- sh -c "cd /var/lib/grafana && tar xzf /tmp/grafana-backup.tar.gz"
+
+# Restart the pod to apply changes
+kubectl delete pod $POD_NAME
+```
+
+### Step 5: Verify Deployment
+
+```bash
+# Check pod status
+kubectl get pods -l app=obseye
+
+# Check all containers are running
+kubectl describe pod -l app=obseye
+
+# Port-forward and access Grafana
+kubectl port-forward service/obseye 3000:3000
+```
+
+### Key Differences Between Docker Compose and Kubernetes
+
+| Aspect | Docker Compose | Kubernetes |
+|--------|----------------|------------|
+| **Architecture** | Multiple containers in separate networks | All containers in one Pod, shared localhost |
+| **Configuration** | Files copied into image at build time | ConfigMaps mounted at runtime |
+| **Scaling** | Manual (docker-compose up --scale) | Automatic with HPA (if enabled) |
+| **Networking** | Bridge network, service names | Localhost within Pod, Service for external access |
+| **Storage** | Docker volumes | PersistentVolumes with PVCs |
+| **Health Checks** | Docker healthcheck | Kubernetes liveness/readiness probes |
+| **Updates** | Requires rebuild and restart | Rolling updates with zero downtime |
+| **Image Building** | Dockerfile + docker-compose build | Not required (uses official images) |
+
+### Configuration Changes
+
+In Kubernetes deployment:
+- All services communicate via `localhost` instead of service names
+- Configurations are managed through ConfigMaps
+- No supervisord - each service runs as a separate container
+- No custom Dockerfile - uses official upstream images
+- Data persistence through PersistentVolumes instead of Docker volumes
+
+## Access Information (Docker Compose)
 
 | Service | URL | Default Credentials | Purpose |
 |---------|-----|-------------------|---------|

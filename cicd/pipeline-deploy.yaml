@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-deploy
+  namespace: default
+spec:
+  params:
+    - name: url
+      type: string
+      description: Git repository URL
+    - name: revision
+      type: string
+      default: "main"
+    - name: manifestPath
+      type: string
+      default: "deployment.yaml"
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: deploy
+      taskRef:
+        name: deploy-from-git
+      params:
+        - name: url
+          value: "$(params.url)"
+        - name: revision
+          value: "$(params.revision)"
+        - name: path
+          value: "$(params.manifestPath)"
+      workspaces:
+        - name: output
+          workspace: shared-workspace

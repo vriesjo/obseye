@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: pipeline-deploy-run
+  namespace: default
+spec:
+  pipelineRef:
+    name: pipeline-deploy
+  params:
+    - name: url
+      value: "$(params.url)"
+    - name: revision
+      value: "$(params.revision)"
+    - name: manifestPath
+      value: "$(params.manifestPath)"
+  workspaces:
+    - name: shared-workspace
+      emptyDir: {}

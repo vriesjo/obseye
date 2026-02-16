@@ -31,6 +31,9 @@ spec:
       - name: config
         configMap:
           name: {{ include "obseye.fullname" . }}-config
+      - name: grafana-dashboards
+        configMap:
+          name: {{ include "obseye.fullname" . }}-grafana-dashboards
       {{- if .Values.persistence.enabled }}
       - name: prometheus-data
         persistentVolumeClaim:
@@ -63,13 +66,26 @@ spec:
         - sh
         - -c
         - |
+          set -e
+          # create provisioning dirs
           mkdir -p /etc/grafana/provisioning/datasources
-          cp /config/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml
+          mkdir -p /etc/grafana/provisioning/dashboards/dashboards
+          # copy datasources provider (from main config CM)
+          cp /config/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml || true
+          # copy dashboard provider config if present in main configmap
+          cp /config/dashboards.yml /etc/grafana/provisioning/dashboards/dashboards/dashboard.yml || true
+          # copy all dashboard JSONs from the dashboard ConfigMap mount
+          cp -r /dashboards/* /etc/grafana/provisioning/dashboards/dashboards/ || true
+          # ensure Grafana uid (numeric) owns the files so Grafana can read them
+          chown -R 472:472 /etc/grafana/provisioning || true
+          chmod -R 755 /etc/grafana/provisioning || true
         volumeMounts:
         - name: config
           mountPath: /config
         - name: grafana-provisioning
           mountPath: /etc/grafana/provisioning
+        - name: grafana-dashboards
+          mountPath: /dashboards
       containers:
       # Prometheus Container
       - name: prometheus

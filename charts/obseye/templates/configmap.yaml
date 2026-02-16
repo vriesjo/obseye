@@ -213,3 +213,30 @@ data:
         editable: false
         jsonData:
           maxLines: 1000
+
+  dashboards.yml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 10
+        allowUiUpdates: true
+        options:
+          path: /etc/grafana/provisioning/dashboards/dashboards
+---
+# ConfigMap containing actual dashboard JSONs
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "obseye.fullname" . }}-grafana-dashboards
+    labels:
+    {{- include "obseye.labels" . | nindent 4 }}
+data:
+{{- $files := .Files.Glob "grafana/provisioning/dashboards/dashboards/*" }}
+{{- range $path, $f := $files }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}

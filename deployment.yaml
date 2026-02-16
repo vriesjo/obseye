@@ -215,7 +215,2097 @@ data:
         editable: false
         jsonData:
           maxLines: 1000
+  dashboards.yml: |
+      apiVersion: 1
 
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 10
+        allowUiUpdates: true
+        options:
+          path: /etc/grafana/provisioning/dashboards/dashboards
+
+---
+# ConfigMap containing actual dashboard JSONs
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: obseye-grafana-dashboards
+  labels:
+    app: obseye
+data:
+    cadvisor-dashboard.json: |
+        {
+            "annotations": {
+                "list": [
+                    {
+                        "builtIn": 1,
+                        "datasource": "-- Grafana --",
+                        "enable": true,
+                        "hide": true,
+                        "iconColor": "rgba(0, 211, 255, 1)",
+                        "name": "Annotations & Alerts",
+                        "type": "dashboard"
+                    }
+                ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "id": null,
+            "links": [],
+            "panels": [
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "id": 2,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(container_cpu_usage_seconds_total{name!=\"\"}[5m]) * 100",
+                            "legendFormat": "{{name}}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Container CPU Usage",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "bytes"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 12,
+                        "y": 0
+                    },
+                    "id": 3,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "container_memory_usage_bytes{name!=\"\"}",
+                            "legendFormat": "{{name}}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Container Memory Usage",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "Bps"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 8
+                    },
+                    "id": 4,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(container_network_receive_bytes_total{name!=\"\"}[5m])",
+                            "legendFormat": "RX {{name}}",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "rate(container_network_transmit_bytes_total{name!=\"\"}[5m])",
+                            "legendFormat": "TX {{name}}",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Container Network I/O",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "Bps"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 12,
+                        "y": 8
+                    },
+                    "id": 5,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(container_fs_reads_bytes_total{name!=\"\"}[5m])",
+                            "legendFormat": "Read {{name}}",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "rate(container_fs_writes_bytes_total{name!=\"\"}[5m])",
+                            "legendFormat": "Write {{name}}",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Container Disk I/O",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "custom": {
+                                "align": "auto",
+                                "displayMode": "auto"
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    },
+                                    {
+                                        "color": "red",
+                                        "value": 0
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 24,
+                        "x": 0,
+                        "y": 16
+                    },
+                    "id": 6,
+                    "options": {
+                        "showHeader": true
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "container_last_seen{name!=\"\"}",
+                            "format": "table",
+                            "instant": true,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Container Status",
+                    "transformations": [
+                        {
+                            "id": "organize",
+                            "options": {
+                                "excludeByName": {
+                                    "Time": true,
+                                    "__name__": true,
+                                    "job": true,
+                                    "instance": true
+                                },
+                                "indexByName": {},
+                                "renameByName": {
+                                    "Value": "Last Seen",
+                                    "image": "Image",
+                                    "name": "Container Name"
+                                }
+                            }
+                        }
+                    ],
+                    "type": "table"
+                }
+            ],
+            "refresh": "5s",
+            "schemaVersion": 36,
+            "style": "dark",
+            "tags": ["cadvisor", "containers"],
+            "templating": {
+                "list": []
+            },
+            "time": {
+                "from": "now-1h",
+                "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "cAdvisor Container Metrics",
+            "uid": "cadvisor",
+            "version": 1
+        }
+    docker-overview-dashboard.json: |
+        {
+            "annotations": {
+                "list": [
+                    {
+                        "builtIn": 1,
+                        "datasource": "-- Grafana --",
+                        "enable": true,
+                        "hide": true,
+                        "iconColor": "rgba(0, 211, 255, 1)",
+                        "name": "Annotations & Alerts",
+                        "type": "dashboard"
+                    }
+                ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "id": null,
+            "links": [],
+            "panels": [
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "gridPos": {
+                        "h": 4,
+                        "w": 6,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "id": 2,
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "none",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "textMode": "auto"
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "count(container_last_seen{name!=\"\"})",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Total Containers",
+                    "type": "stat"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "bytes"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 4,
+                        "w": 6,
+                        "x": 6,
+                        "y": 0
+                    },
+                    "id": 3,
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "textMode": "auto"
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "sum(container_memory_usage_bytes{name!=\"\"})",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Total Memory Usage",
+                    "type": "stat"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 4,
+                        "w": 6,
+                        "x": 12,
+                        "y": 0
+                    },
+                    "id": 4,
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "textMode": "auto"
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "sum(rate(container_cpu_usage_seconds_total{name!=\"\"}[5m])) * 100",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Total CPU Usage",
+                    "type": "stat"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [
+                                {
+                                    "options": {
+                                        "0": {
+                                            "color": "red",
+                                            "index": 1,
+                                            "text": "DOWN"
+                                        },
+                                        "1": {
+                                            "color": "green",
+                                            "index": 0,
+                                            "text": "UP"
+                                        }
+                                    },
+                                    "type": "value"
+                                }
+                            ],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "gridPos": {
+                        "h": 4,
+                        "w": 6,
+                        "x": 18,
+                        "y": 0
+                    },
+                    "id": 5,
+                    "options": {
+                        "colorMode": "background",
+                        "graphMode": "none",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "textMode": "auto"
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "up{job=\"prometheus\"}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Monitoring Stack Status",
+                    "type": "stat"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "none"
+                                }
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "bytes"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 4
+                    },
+                    "id": 6,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "sum by (name) (container_memory_usage_bytes{name!=\"\"})",
+                            "legendFormat": "{{name}}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Memory Usage by Container",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 12,
+                        "y": 4
+                    },
+                    "id": 7,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name!=\"\"}[5m])) * 100",
+                            "legendFormat": "{{name}}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "CPU Usage by Container",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "Bps"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 12
+                    },
+                    "id": 8,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\"}[5m]))",
+                            "legendFormat": "RX {{name}}",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "sum by (name) (rate(container_network_transmit_bytes_total{name!=\"\"}[5m]))",
+                            "legendFormat": "TX {{name}}",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Network Traffic by Container",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Loki",
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 12,
+                        "y": 12
+                    },
+                    "id": 9,
+                    "options": {
+                        "dedupStrategy": "none",
+                        "enableLogDetails": true,
+                        "prettifyLogMessage": false,
+                        "showCommonLabels": false,
+                        "showLabels": false,
+                        "showTime": true,
+                        "sortOrder": "Descending",
+                        "wrapLogMessage": false
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "{container=~\".+\"}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Container Logs",
+                    "type": "logs"
+                }
+            ],
+            "refresh": "5s",
+            "schemaVersion": 36,
+            "style": "dark",
+            "tags": ["docker", "overview"],
+            "templating": {
+                "list": []
+            },
+            "time": {
+                "from": "now-1h",
+                "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "Docker Overview",
+            "uid": "docker-overview",
+            "version": 1
+        }
+    node-exporter-dashboard.json: |
+        {
+            "annotations": {
+                "list": [
+                    {
+                        "builtIn": 1,
+                        "datasource": "-- Grafana --",
+                        "enable": true,
+                        "hide": true,
+                        "iconColor": "rgba(0, 211, 255, 1)",
+                        "name": "Annotations & Alerts",
+                        "type": "dashboard"
+                    }
+                ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "id": null,
+            "links": [],
+            "panels": [
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "max": 100,
+                            "min": 0,
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    },
+                                    {
+                                        "color": "yellow",
+                                        "value": 70
+                                    },
+                                    {
+                                        "color": "red",
+                                        "value": 85
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 6,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "id": 2,
+                    "options": {
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "showThresholdLabels": false,
+                        "showThresholdMarkers": true
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "CPU Usage",
+                    "type": "gauge"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "max": 100,
+                            "min": 0,
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    },
+                                    {
+                                        "color": "yellow",
+                                        "value": 70
+                                    },
+                                    {
+                                        "color": "red",
+                                        "value": 85
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 6,
+                        "x": 6,
+                        "y": 0
+                    },
+                    "id": 3,
+                    "options": {
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "showThresholdLabels": false,
+                        "showThresholdMarkers": true
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Memory Usage",
+                    "type": "gauge"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "max": 100,
+                            "min": 0,
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "red",
+                                        "value": null
+                                    },
+                                    {
+                                        "color": "yellow",
+                                        "value": 20
+                                    },
+                                    {
+                                        "color": "green",
+                                        "value": 40
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 6,
+                        "x": 12,
+                        "y": 0
+                    },
+                    "id": 4,
+                    "options": {
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "showThresholdLabels": false,
+                        "showThresholdMarkers": true
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "(node_filesystem_avail_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs|vfat\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs|vfat\"}) * 100",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Disk Space Available",
+                    "type": "gauge"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "bytes"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 6,
+                        "x": 18,
+                        "y": 0
+                    },
+                    "id": 5,
+                    "options": {
+                        "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom"
+                        },
+                        "tooltip": {
+                            "mode": "single"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(node_network_receive_bytes_total[5m])",
+                            "legendFormat": "RX {{device}}",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "rate(node_network_transmit_bytes_total[5m])",
+                            "legendFormat": "TX {{device}}",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Network Traffic",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 8
+                    },
+                    "id": 6,
+                    "options": {
+                        "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                            "legendFormat": "CPU Usage",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "CPU Usage Over Time",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "bytes"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 12,
+                        "y": 8
+                    },
+                    "id": 7,
+                    "options": {
+                        "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+                            "legendFormat": "Used Memory",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "node_memory_MemAvailable_bytes",
+                            "legendFormat": "Available Memory",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Memory Usage Over Time",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "Bps"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 16
+                    },
+                    "id": 8,
+                    "options": {
+                        "legend": {
+                            "calcs": [],
+                            "displayMode": "list",
+                            "placement": "bottom"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(node_disk_read_bytes_total[5m])",
+                            "legendFormat": "Read {{device}}",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "rate(node_disk_written_bytes_total[5m])",
+                            "legendFormat": "Write {{device}}",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Disk I/O",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "custom": {
+                                "align": "auto",
+                                "displayMode": "auto"
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 12,
+                        "y": 16
+                    },
+                    "id": 9,
+                    "options": {
+                        "showHeader": true
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs|vfat\"}",
+                            "format": "table",
+                            "instant": true,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Filesystem Information",
+                    "transformations": [
+                        {
+                            "id": "organize",
+                            "options": {
+                                "excludeByName": {
+                                    "Time": true,
+                                    "__name__": true,
+                                    "job": true
+                                },
+                                "indexByName": {},
+                                "renameByName": {
+                                    "Value": "Size (bytes)",
+                                    "device": "Device",
+                                    "fstype": "Type",
+                                    "mountpoint": "Mount Point"
+                                }
+                            }
+                        }
+                    ],
+                    "type": "table"
+                }
+            ],
+            "refresh": "5s",
+            "schemaVersion": 36,
+            "style": "dark",
+            "tags": ["node-exporter", "system"],
+            "templating": {
+                "list": []
+            },
+            "time": {
+                "from": "now-1h",
+                "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "Node Exporter Metrics",
+            "uid": "node-exporter",
+            "version": 1
+        }
+    proaktive-db.json: |
+        {
+            "annotations": {
+                "list": [
+                    {
+                        "builtIn": 1,
+                        "datasource": "-- Grafana --",
+                        "enable": true,
+                        "hide": true,
+                        "iconColor": "rgba(0, 211, 255, 1)",
+                        "name": "Annotations & Alerts",
+                        "type": "dashboard"
+                    }
+                ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "id": null,
+            "links": [],
+            "panels": [
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "s"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "id": 1,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "ktor_http_server_requests_seconds{quantile=\"0.95\"}",
+                            "legendFormat": "{{name}}",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Latency (95th Percentile)",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "number"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 8
+                    },
+                    "id": 2,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(ktor_http_server_requests_seconds_count[5m])",
+                            "legendFormat": "Request Rate",
+                            "refId": "B"
+                        }
+                    ],
+                    "title": "Request Rate",
+                    "type": "timeseries"
+
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "s"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 16
+                    },
+                    "id": 3,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(ktor_http_server_requests_seconds_sum[5m])",
+                            "legendFormat": "Request Sum Rate",
+                            "refId": "C"
+                        }
+                    ],
+                    "title": "Request Sum Rate",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "s"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 24
+                    },
+                    "id": 4,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "ktor_http_server_requests_seconds{quantile=\"0.5\"}",
+                            "legendFormat": "p50",
+                            "refId": "A"
+                        },
+                        {
+                            "expr": "ktor_http_server_requests_seconds{quantile=\"0.95\"}",
+                            "legendFormat": "p95",
+                            "refId": "B"
+                        },
+                        {
+                            "expr": "ktor_http_server_requests_seconds{quantile=\"0.99\"}",
+                            "legendFormat": "p99",
+                            "refId": "C"
+                        }
+                    ],
+                    "title": "HTTP Request Latencies",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "reqps"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 32
+                    },
+                    "id": 5,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "rate(ktor_http_server_requests_seconds_count{status=~\"5..\"}[5m])",
+                            "legendFormat": "5xx Error Rate",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "5xx Error Rate",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 40
+                    },
+                    "id": 6,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "system_cpu_usage * 100",
+                            "legendFormat": "CPU Usage",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "CPU Usage",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "percent"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 48
+                    },
+                    "id": 7,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "(jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"}) * 100",
+                            "legendFormat": "Heap Usage",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "JVM Heap Usage",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": "Prometheus",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "axisLabel": "",
+                                "axisPlacement": "auto",
+                                "barAlignment": 0,
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "gradientMode": "none",
+                                "hideFrom": {
+                                    "tooltip": false,
+                                    "viz": false,
+                                    "legend": false
+                                },
+                                "lineInterpolation": "linear",
+                                "lineWidth": 1,
+                                "pointSize": 5,
+                                "scaleDistribution": {
+                                    "type": "linear"
+                                },
+                                "showPoints": "never",
+                                "spanNulls": true
+                            },
+                            "mappings": [],
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "unit": "number"
+                        }
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 12,
+                        "x": 0,
+                        "y": 56
+                    },
+                    "id": 8,
+                    "options": {
+                        "legend": {
+                            "calcs": ["mean", "max"],
+                            "displayMode": "table",
+                            "placement": "right"
+                        },
+                        "tooltip": {
+                            "mode": "multi"
+                        }
+                    },
+                    "pluginVersion": "9.0.0",
+                    "targets": [
+                        {
+                            "expr": "jvm_threads_live",
+                            "legendFormat": "Live Threads",
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "JVM Thread Count",
+                    "type": "timeseries"
+                }
+            ],
+            "refresh": "5s",
+            "schemaVersion": 36,
+            "style": "dark",
+            "tags": ["proaktive-db", "microservices"],
+            "templating": {
+                "list": []
+            },
+            "time": {
+                "from": "now-1h",
+                "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "Proaktive-db Microservice SRE Metrics",
+            "uid": "proaktive-db",
+            "version": 1
+        }
 ---
 # PersistentVolumeClaims for data persistence
 apiVersion: v1
@@ -301,6 +2391,9 @@ spec:
       - name: config
         configMap:
           name: obseye-config
+      - name: grafana-dashboards
+        configMap:
+          name: obseye-grafana-dashboards
       - name: prometheus-data
         persistentVolumeClaim:
           claimName: obseye-prometheus-data
@@ -322,13 +2415,39 @@ spec:
         - sh
         - -c
         - |
-          mkdir -p /etc/grafana/provisioning/datasources
-          cp /config/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml
+            # 1. Create the full directory structure
+            mkdir -p /etc/grafana/provisioning/datasources
+            mkdir -p /etc/grafana/provisioning/dashboards/dashboards
+            mkdir -p /etc/grafana/provisioning/plugins
+            mkdir -p /etc/grafana/provisioning/notifiers
+
+            # 2. Copy Datasources
+            if [ -f /config/datasources.yml ]; then
+              cp /config/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml
+            fi
+
+            # 3. Copy Dashboard Provider Config (using -L to follow symlinks)
+            if [ -f /config/dashboards.yml ]; then
+              cp -L /config/dashboards.yml /etc/grafana/provisioning/dashboards/dashboard.yml
+            fi
+
+            # 4. Copy ACTUAL JSON content (The -RL flag is the key here)
+            # We copy from the mount point into the sub-folder Grafana is watching
+            cp -RL /dashboards/*.json /etc/grafana/provisioning/dashboards/dashboards/ || true
+
+            # 5. Fix Permissions
+            chown -R 472:472 /etc/grafana/provisioning
+            chmod -R 755 /etc/grafana/provisioning
+
+            echo "Provisioning setup complete. Files in dashboards folder:"
+            ls -l /etc/grafana/provisioning/dashboards/dashboards/
         volumeMounts:
         - name: config
           mountPath: /config
         - name: grafana-provisioning
           mountPath: /etc/grafana/provisioning
+        - name: grafana-dashboards
+          mountPath: /dashboards
       containers:
       # Prometheus Container
       - name: prometheus

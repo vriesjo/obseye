@@ -79,8 +79,8 @@
       "pluginVersion": "9.0.0",
       "targets": [
         {
-          "expr": "rate(container_cpu_usage_seconds_total{name!=\"\"}[5m]) * 100",
-          "legendFormat": "{{name}}",
+          "expr": "label_replace(sum by (id) (rate(container_cpu_usage_seconds_total{id=~\"/docker/[^/]+\",cpu=\"total\"}[5m])) * 100, \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
+          "legendFormat": "{{container}}",
           "refId": "A"
         }
       ],
@@ -148,8 +148,8 @@
       "pluginVersion": "9.0.0",
       "targets": [
         {
-          "expr": "container_memory_usage_bytes{name!=\"\"}",
-          "legendFormat": "{{name}}",
+          "expr": "label_replace(container_memory_usage_bytes{id=~\"/docker/[^/]+\"}, \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
+          "legendFormat": "{{container}}",
           "refId": "A"
         }
       ],
@@ -217,16 +217,17 @@
       "pluginVersion": "9.0.0",
       "targets": [
         {
-          "expr": "rate(container_network_receive_bytes_total{name!=\"\"}[5m])",
-          "legendFormat": "RX {{name}}",
+          "expr": "label_replace(sum by (id) (rate(container_network_receive_bytes_total{id=~\"/docker/[^/]+\"}[5m])), \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
+          "legendFormat": "RX {{container}}",
           "refId": "A"
         },
         {
-          "expr": "rate(container_network_transmit_bytes_total{name!=\"\"}[5m])",
-          "legendFormat": "TX {{name}}",
+          "expr": "label_replace(sum by (id) (rate(container_network_transmit_bytes_total{id=~\"/docker/[^/]+\"}[5m])), \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
+          "legendFormat": "TX {{container}}",
           "refId": "B"
         }
       ],
+      "description": "Per-container network counters. Empty on Docker Desktop, which only exposes the root network namespace to cAdvisor.",
       "title": "Container Network I/O",
       "type": "timeseries"
     },
@@ -291,13 +292,13 @@
       "pluginVersion": "9.0.0",
       "targets": [
         {
-          "expr": "rate(container_fs_reads_bytes_total{name!=\"\"}[5m])",
-          "legendFormat": "Read {{name}}",
+          "expr": "label_replace(sum by (id) (rate(container_fs_reads_bytes_total{id=~\"/docker/[^/]+\"}[5m])), \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
+          "legendFormat": "Read {{container}}",
           "refId": "A"
         },
         {
-          "expr": "rate(container_fs_writes_bytes_total{name!=\"\"}[5m])",
-          "legendFormat": "Write {{name}}",
+          "expr": "label_replace(sum by (id) (rate(container_fs_writes_bytes_total{id=~\"/docker/[^/]+\"}[5m])), \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
+          "legendFormat": "Write {{container}}",
           "refId": "B"
         }
       ],
@@ -344,7 +345,7 @@
       "pluginVersion": "9.0.0",
       "targets": [
         {
-          "expr": "container_last_seen{name!=\"\"}",
+          "expr": "label_replace(container_last_seen{id=~\"/docker/[^/]+\"}, \"container\", \"$1\", \"id\", \"/docker/(.{12}).*\")",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -358,14 +359,14 @@
             "excludeByName": {
               "Time": true,
               "__name__": true,
+              "id": true,
               "job": true,
               "instance": true
             },
             "indexByName": {},
             "renameByName": {
               "Value": "Last Seen",
-              "image": "Image",
-              "name": "Container Name"
+              "container": "Container"
             }
           }
         }

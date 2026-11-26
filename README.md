@@ -132,7 +132,3 @@ obseye/
 ```
 
 Compose mounts the files under `prometheus/`, `loki/`, `tempo/`, `promtail/`, `alertmanager/`, and `grafana/provisioning/`. The Kubernetes manifest carries its own copies, with localhost addresses instead of Compose service names.
-
-## License
-
-This configuration is provided as-is for use with these open-source monitoring tools.
